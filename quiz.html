@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            margin: auto;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .options {
+            margin-bottom: 20px;
+        }
+        .options label {
+            display: block;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            background-color: #f44336;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h2>Science Quiz</h2>
+        <div id="quiz"></div>
+        <button id="startBtn" class="btn">क्विज शुरू करें</button>
+        <button id="nextBtn" class="btn" style="display: none;">अगला प्रश्न</button>
+        <button id="submitBtn" class="btn" disabled>उत्तर सबमिट करें</button>
+        <button id="cancelBtn" class="btn btn-cancel" disabled>क्विज रद्द करें</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+  {
+    question: "मीथेन (Methane) का IUPAC नाम क्या है?",
+    options: ["Methane", "Ethane", "Propanone", "Methanol"],
+    correctAnswer: 0
+  },
+  {
+    question: "CH3-CH2-OH का IUPAC नाम क्या है?",
+    options: ["Ethanol", "Methanol", "Propanol", "Butanol"],
+    correctAnswer: 0
+  },
+  {
+    question: "CH3-COOH का IUPAC नाम क्या है?",
+    options: ["Acetic acid", "Formic acid", "Propanoic acid", "Butanoic acid"],
+    correctAnswer: 0
+  },
+  {
+    question: "CH3-CHO को किस नाम से जाना जाता है?",
+    options: ["Ethanal", "Ethanol", "Propanal", "Methanal"],
+    correctAnswer: 0
+  },
+  {
+    question: "CH4 में कितने हाइड्रोजन परमाणु होते हैं?",
+    options: ["1", "2", "4", "6"],
+    correctAnswer: 2
+  },
+  {
+    question: "C6H6 का IUPAC नाम क्या है?",
+    options: ["Benzene", "Hexane", "Cyclohexane", "Cyclohexene"],
+    correctAnswer: 0
+  },
+  {
+    question: "C2H2 का IUPAC नाम क्या है?",
+    options: ["Ethene", "Ethane", "Ethyne", "Butyne"],
+    correctAnswer: 2
+  },
+  {
+    question: "CH3-CH2-CH2-CH3 का IUPAC नाम क्या है?",
+    options: ["Butane", "Pentane", "Propane", "Hexane"],
+    correctAnswer: 0
+  },
+  {
+    question: "C3H8 को किस नाम से जाना जाता है?",
+    options: ["Methane", "Propane", "Butane", "Pentane"],
+    correctAnswer: 1
+  },
+  {
+    question: "CH2=CH2 का IUPAC नाम क्या है?",
+    options: ["Ethane", "Ethene", "Ethyne", "Propene"],
+    correctAnswer: 1
+  },
+  {
+    question: "HCOOH का IUPAC नाम क्या है?",
+    options: ["Formic acid", "Acetic acid", "Propanoic acid", "Butanoic acid"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा समूह प्राथमिक अल्कोहल में मौजूद होता है?",
+    options: ["-OH", "-COOH", "-CHO", "-COO"],
+    correctAnswer: 0
+  },
+  {
+    question: "IUPAC के अनुसार, CH3-CO-CH3 का नाम क्या होगा?",
+    options: ["Propanone", "Ethanone", "Butanone", "Methanone"],
+    correctAnswer: 0
+  },
+  {
+    question: "किस यौगिक का IUPAC नाम Methanal है?",
+    options: ["CH3OH", "HCHO", "C2H5OH", "CH3CHO"],
+    correctAnswer: 1
+  },
+  {
+    question: "C4H10 का नाम क्या होगा?",
+    options: ["Butane", "Pentane", "Propane", "Hexane"],
+    correctAnswer: 0
+  },
+  {
+    question: "CH3-CH=CH2 का IUPAC नाम क्या है?",
+    options: ["Propene", "Propyne", "Butene", "Pentene"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा यौगिक एक अल्काइन है?",
+    options: ["C2H2", "C2H6", "C2H4", "C3H8"],
+    correctAnswer: 0
+  },
+
+  {
+    question: "कार्बनिक यौगिकों का अध्ययन किसकी खोज के साथ शुरू हुआ?",
+    options: ["यूरिया", "मीथेन", "इथेनॉल", "एसीटिक एसिड"],
+    correctAnswer: 0
+  },
+  {
+    question: "कार्बनिक यौगिकों में मुख्यतः कौन सा तत्व पाया जाता है?",
+    options: ["नाइट्रोजन", "हाइड्रोजन", "कार्बन", "ऑक्सीजन"],
+    correctAnswer: 2
+  },
+  {
+    question: "कौन सा बंध सबसे मजबूत होता है?",
+    options: ["सिग्मा बंध", "पाई बंध", "डबल बंध", "ट्रिपल बंध"],
+    correctAnswer: 3
+  },
+  {
+    question: "आइसोमर्स के लिए कौन सा कथन सही है?",
+    options: [
+      "वे समान संरचना रखते हैं।",
+      "वे समान रासायनिक गुण रखते हैं।",
+      "वे समान आणविक सूत्र रखते हैं।",
+      "वे समान भौतिक गुण रखते हैं।"
+    ],
+    correctAnswer: 2
+  },
+  {
+    question: "कार्बनिक यौगिकों के सूत्र में बेंजीन रिंग को दर्शाने वाला प्रतीक क्या है?",
+    options: ["छह कोणीय रिंग", "चौकोर रिंग", "तीन कोणीय रिंग", "पाँच कोणीय रिंग"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा समूह कार्बोक्सिलिक एसिड में उपस्थित होता है?",
+    options: ["-CHO", "-COOH", "-OH", "-CO"],
+    correctAnswer: 1
+  },
+  {
+    question: "अल्केन्स में कौन सा सामान्य सूत्र होता है?",
+    options: ["CnH2n", "CnH2n+2", "CnH2n-2", "CnH2n+1"],
+    correctAnswer: 1
+  },
+  {
+    question: "इलेक्ट्रोफाइल्स क्या होते हैं?",
+    options: [
+      "इलेक्ट्रॉन डोनेटर्स",
+      "इलेक्ट्रॉन एट्रैक्टर्स",
+      "न्यूट्रल अणु",
+      "मुक्त इलेक्ट्रॉन वाले कण"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "न्यूक्लियोफाइल्स किस पर निर्भर करते हैं?",
+    options: [
+      "इलेक्ट्रॉन की कमी",
+      "इलेक्ट्रॉन की अधिकता",
+      "स्थिरता",
+      "हाइड्रोजन बंधन"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "रेडिकल में क्या होता है?",
+    options: [
+      "पूर्ण ऑक्टेट",
+      "असंतुलित प्रोटॉन",
+      "अकेला इलेक्ट्रॉन",
+      "डबल बंध"
+    ],
+    correctAnswer: 2
+  },
+  {
+    question: "कौन सा अभिक्रिया तंत्र अल्काइल हैलाइड में पाया जाता है?",
+    options: ["SN1", "SN2", "E1", "सभी"],
+    correctAnswer: 3
+  },
+  {
+    question: "इंडक्टिव इफ़ेक्ट किससे संबंधित है?",
+    options: [
+      "इलेक्ट्रॉन्स की गति",
+      "बंधों की लंबाई",
+      "पोलराइजेशन",
+      "रेजोनेंस"
+    ],
+    correctAnswer: 2
+  },
+  {
+    question: "रेजोनेंस इफ़ेक्ट में क्या होता है?",
+    options: [
+      "इलेक्ट्रॉन्स स्थिर रहते हैं।",
+      "इलेक्ट्रॉन्स स्थानांतरित होते हैं।",
+      "बंध टूटते हैं।",
+      "अणु बदलते हैं।"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "प्लेन ऑफ़ सिमेट्री किस प्रकार के यौगिक में होती है?",
+    options: [
+      "चिरल यौगिक",
+      "अचिरल यौगिक",
+      "ऑप्टिकली एक्टिव यौगिक",
+      "रेजोनेंस यौगिक"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "प्लेन पॉलराइज्ड लाइट को घुमाने वाले यौगिकों को क्या कहते हैं?",
+    options: [
+      "रेजोनेंस यौगिक",
+      "चिरल यौगिक",
+      "इलेक्ट्रोफाइल",
+      "न्यूक्लियोफाइल"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "SN1 अभिक्रिया में रेट डिटर्मिनिंग स्टेप क्या है?",
+    options: [
+      "कार्बोकैटियन का निर्माण",
+      "न्यूक्लियोफाइल का हमला",
+      "प्रोटॉन का स्थानांतरण",
+      "बंध टूटना"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "कार्बनिक यौगिकों में इलेक्ट्रोफाइल किसकी ओर आकर्षित होते हैं?",
+    options: [
+      "धनात्मक केंद्र",
+      "ऋणात्मक केंद्र",
+      "चिरल केंद्र",
+      "संतृप्त केंद्र"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "कौन सा कार्बोकेटियन सबसे स्थिर होता है?",
+    options: [
+      "1° कार्बोकेटियन",
+      "2° कार्बोकेटियन",
+      "3° कार्बोकेटियन",
+      "मीथाइल कार्बोकेटियन"
+    ],
+    correctAnswer: 2
+  },
+  {
+    question: "इलेक्ट्रोफाइल का उदाहरण कौन सा है?",
+    options: ["H+", "NH3", "H2O", "Cl-"],
+    correctAnswer: 0
+  },
+  {
+    question: "पाई बंध की इलेक्ट्रॉन्स को कौन आकर्षित करता है?",
+    options: ["न्यूक्लियोफाइल्स", "इलेक्ट्रोफाइल्स", "रेडिकल्स", "धातु आयन"],
+    correctAnswer: 1
+  },
+
+  {
+    question: "Isomerism का अर्थ क्या है?",
+    options: [
+      "यौगिकों का समान सूत्र लेकिन अलग संरचना होना",
+      "यौगिकों का समान संरचना लेकिन अलग सूत्र होना",
+      "यौगिकों का समान गुण और संरचना होना",
+      "यौगिकों का कोई समानता न होना"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "किस प्रकार के आइसोमर में अणु एक ही संरचना साझा करते हैं लेकिन भिन्न स्थानिक व्यवस्था होती है?",
+    options: ["Structural isomers", "Geometrical isomers", "Optical isomers", "Functional isomers"],
+    correctAnswer: 1
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म 'cis' और 'trans' रूप में पाया जाता है?",
+    options: ["Structural isomerism", "Geometrical isomerism", "Optical isomerism", "Chain isomerism"],
+    correctAnswer: 1
+  },
+  {
+    question: "Isomerism का सबसे पहला प्रकार कौन सा है?",
+    options: ["Structural", "Geometrical", "Optical", "Functional"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म कार्यात्मक समूह में अंतर के कारण होता है?",
+    options: ["Functional isomerism", "Chain isomerism", "Geometrical isomerism", "Tautomerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "C3H6O के लिए कौन सा आइसोमरिज़्म मौजूद है?",
+    options: [
+      "Functional isomerism",
+      "Geometrical isomerism",
+      "Optical isomerism",
+      "Chain isomerism"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "किस प्रकार का आइसोमरिज़्म बंधों की स्थिति में बदलाव के कारण होता है?",
+    options: ["Position isomerism", "Chain isomerism", "Functional isomerism", "Metamerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म संतृप्त और असंतृप्त यौगिकों में पाया जाता है?",
+    options: ["Functional isomerism", "Structural isomerism", "Chain isomerism", "Tautomerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "C4H10 के लिए कौन सा आइसोमरिज़्म मौजूद है?",
+    options: ["Chain isomerism", "Geometrical isomerism", "Optical isomerism", "Metamerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "Tautomerism मुख्य रूप से किन यौगिकों में पाया जाता है?",
+    options: ["Ketones और Enols", "Alcohols और Acids", "Alkanes और Alkenes", "Esters और Aldehydes"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म केवल चिरलिटी (Chirality) के कारण होता है?",
+    options: ["Geometrical isomerism", "Optical isomerism", "Chain isomerism", "Functional isomerism"],
+    correctAnswer: 1
+  },
+  {
+    question: "आइसोमरिज़्म जिसमें एक ही आणविक सूत्र में अलग-अलग कार्बन चेन होती है, उसे क्या कहते हैं?",
+    options: ["Chain isomerism", "Position isomerism", "Functional isomerism", "Geometrical isomerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "C2H6O के लिए कौन सा आइसोमरिज़्म मौजूद है?",
+    options: ["Functional isomerism", "Chain isomerism", "Geometrical isomerism", "Metamerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म एनोमेरिक कार्बन पर निर्भर करता है?",
+    options: ["Tautomerism", "Geometrical isomerism", "Anomerism", "Optical isomerism"],
+    correctAnswer: 2
+  },
+  {
+    question: "आइसोमरिज़्म में समान आणविक सूत्र होता है लेकिन संरचना में भिन्नता होती है। इसे क्या कहते हैं?",
+    options: ["Optical isomerism", "Structural isomerism", "Geometrical isomerism", "Position isomerism"],
+    correctAnswer: 1
+  },
+  {
+    question: "Cis और Trans आइसोमर के गुण एक-दूसरे से अलग होते हैं। इसका कारण क्या है?",
+    options: ["Hydrogen bonding", "Pi-bond rigidity", "Chirality", "Hybridization"],
+    correctAnswer: 1
+  },
+  {
+    question: "कौन सा आइसोमरिज़्म केवल कार्बन चेन की लंबाई पर आधारित होता है?",
+    options: ["Metamerism", "Chain isomerism", "Position isomerism", "Optical isomerism"],
+    correctAnswer: 1
+  },
+  {
+    question: "C3H8O के लिए कौन सा आइसोमरिज़्म मौजूद है?",
+    options: ["Position isomerism", "Geometrical isomerism", "Functional isomerism", "Chain isomerism"],
+    correctAnswer: 0
+  },
+  {
+    question: "Ethene (C2H4) किस प्रकार का आइसोमर बना सकता है?",
+    options: ["Functional", "Geometrical", "Optical", "Chain"],
+    correctAnswer: 1
+  },
+  {
+    question: "आवर्त सारणी के जनक कौन हैं?",
+    options: ["डेमिट्री मेंडलीफ", "जॉन डाल्टन", "लावॉयज़ियर", "हेनरी मोस्ले"],
+    correctAnswer: 0
+  },
+ 
+  {
+    question: "आधुनिक आवर्त सारणी किस पर आधारित है?",
+    options: [
+      "परमाणु संख्या",
+      "परमाणु भार",
+      "इलेक्ट्रॉन विन्यास",
+      "मोलर द्रव्यमान"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "आवर्त सारणी में समूहों की कुल संख्या कितनी है?",
+    options: ["8", "16", "18", "32"],
+    correctAnswer: 2
+  },
+  {
+    question: "क्षारीय धातुओं का समूह कौन सा है?",
+    options: ["समूह 1", "समूह 2", "समूह 17", "समूह 18"],
+    correctAnswer: 0
+  },
+  {
+    question: "हैलोजन (Halogens) किस समूह में पाए जाते हैं?",
+    options: ["समूह 16", "समूह 17", "समूह 18", "समूह 15"],
+    correctAnswer: 1
+  },
+  {
+    question: "निष्क्रिय गैसों का समूह कौन सा है?",
+    options: ["समूह 16", "समूह 17", "समूह 18", "समूह 1"],
+    correctAnswer: 2
+  },
+  {
+    question: "आवर्त सारणी में तत्वों को किस क्रम में व्यवस्थित किया गया है?",
+    options: [
+      "परमाणु भार के बढ़ते क्रम में",
+      "परमाणु संख्या के बढ़ते क्रम में",
+      "आयतन के बढ़ते क्रम में",
+      "घनत्व के बढ़ते क्रम में"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "आवर्त सारणी का पहला तत्व कौन सा है?",
+    options: ["हाइड्रोजन", "हीलियम", "लिथियम", "ऑक्सीजन"],
+    correctAnswer: 0
+  },
+  {
+    question: "आवर्त सारणी का सबसे भारी तत्व कौन सा है?",
+    options: ["ओगनेसॉन (Og)", "युरेनियम (U)", "प्लूटोनियम (Pu)", "लेड (Pb)"],
+    correctAnswer: 0
+  },
+  {
+    question: "लैंथेनाइड श्रेणी किस समूह में आती है?",
+    options: ["f-ब्लॉक", "p-ब्लॉक", "s-ब्लॉक", "d-ब्लॉक"],
+    correctAnswer: 0
+  },
+  {
+    question: "एक ही आवर्त में तत्वों की इलेक्ट्रॉनों की संख्या में क्या समानता होती है?",
+    options: [
+      "इलेक्ट्रॉन प्रोटॉन के समान होते हैं",
+      "ऑर्बिटल्स की संख्या समान होती है",
+      "आउटर शेल इलेक्ट्रॉन्स समान होते हैं",
+      "न्यूट्रॉन समान होते हैं"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "आवर्त सारणी के किस ब्लॉक में ट्रांज़िशन मेटल्स पाए जाते हैं?",
+    options: ["s-ब्लॉक", "p-ब्लॉक", "d-ब्लॉक", "f-ब्लॉक"],
+    correctAnswer: 2
+  },
+  {
+    question: "ग्रुप 1 के तत्वों का एक आम गुण क्या है?",
+    options: [
+      "वे अत्यधिक अभिक्रियाशील हैं",
+      "वे निष्क्रिय गैस हैं",
+      "वे मेटलॉइड्स हैं",
+      "वे अधातु हैं"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "आवर्त सारणी का सबसे इलेक्ट्रोनेगेटिव तत्व कौन सा है?",
+    options: ["ऑक्सीजन", "नाइट्रोजन", "फ्लोरीन", "क्लोरीन"],
+    correctAnswer: 2
+  },
+  {
+    question: "तत्वों के आवर्त नियम की खोज किसने की थी?",
+    options: [
+      "डेमिट्री मेंडलीफ",
+      "हेनरी मोस्ले",
+      "जॉन डाल्टन",
+      "रदरफोर्ड"
+    ],
+    correctAnswer: 1
+  },
+  {
+    question: "किस ब्लॉक के तत्वों को ‘रेयर अर्थ’ तत्व कहा जाता है?",
+    options: ["d-ब्लॉक", "f-ब्लॉक", "p-ब्लॉक", "s-ब्लॉक"],
+    correctAnswer: 1
+  },
+  {
+    question: "ग्रुप 17 के तत्वों का एक सामान्य गुण क्या है?",
+    options: [
+      "उच्च इलेक्ट्रोनेगेटिविटी",
+      "उच्च आयनिक रेडियस",
+      "निष्क्रियता",
+      "अधातु गुण"
+    ],
+    correctAnswer: 0
+  },
+  {
+    question: "आवर्त सारणी में ऊर्ध्वाधर स्तंभों को क्या कहते हैं?",
+    options: ["ब्लॉक", "गुणसूत्र", "समूह", "आवर्त"],
+    correctAnswer: 2
+  },
+  {
+    question: "आवर्त सारणी में नाइट्रोजन का परमाणु क्रमांक क्या है?",
+    options: ["5", "6", "7", "8"],
+    correctAnswer: 2
+  }
+
+
+
+
+];
+
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let quizStarted = false;
+
+        function displayQuestion(index) {
+            const questionData = questions[index];
+            const questionHtml = `
+                <div class="question">${index + 1}. ${questionData.question}</div>
+                <div class="options">
+                    ${questionData.options.map((option, i) => 
+                        `<label><input type="radio" name="question${index}" value="${i}"> ${option}</label>`).join('')}
+                </div>
+            `;
+            return questionHtml;
+        }
+
+        function startQuiz() {
+            quizStarted = true;
+            currentQuestionIndex = 0;
+            answers = [];
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('cancelBtn').disabled = false;
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('quiz').innerHTML = displayQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+            if (selectedOption) {
+                answers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('quiz').innerHTML = displayQuestion(currentQuestionIndex);
+            } else {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        }
+
+        function cancelQuiz() {
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('cancelBtn').disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('quiz').innerHTML = '';
+            document.getElementById('result').innerHTML = 'क्विज रद्द किया गया।';
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            answers.forEach((answer, index) => {
+                if (answer === questions[index].correctAnswer) {
+                    score+=4;
+                }else{
+                 score-=1;
+                }
+
+            });
+            document.getElementById('result').innerHTML = `क्विज पूरा हो गया। आपने ${questions.length*4} में से ${score} उत्तर सही दिए।`;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('cancelBtn').disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startQuiz);
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+        document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+        document.getElementById('cancelBtn').addEventListener('click', cancelQuiz);
+    </script>
+</body>
+</html>
